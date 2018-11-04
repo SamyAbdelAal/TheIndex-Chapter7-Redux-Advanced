@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import axios from "axios";
+import { connect } from "react-redux";
+import * as actionCreators from "./store/actions/index";
 
 // Components
 import Sidebar from "./Sidebar";
@@ -8,32 +10,35 @@ import Loading from "./Loading";
 import AuthorsList from "./AuthorsList";
 import AuthorDetail from "./AuthorDetail";
 
-const instance = axios.create({
-  baseURL: "https://the-index-api.herokuapp.com"
-});
+// const instance = axios.create({
+//   baseURL: "https://the-index-api.herokuapp.com"
+// });
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      authors: [],
-      loading: true
+      loading: false
     };
   }
 
-  fetchAllAuthors() {
-    return instance.get("/api/authors/").then(res => res.data);
-  }
+  // fetchAllAuthors() {
+  //   return instance.get("/api/authors/").then(res => res.data);
+  // }
 
   componentDidMount() {
-    this.fetchAllAuthors()
-      .then(authors =>
-        this.setState({
-          authors: authors,
-          loading: false
-        })
-      )
-      .catch(err => console.error(err));
+    // this.fetchAllAuthors()
+    //   .then(authors =>
+    //     this.setState({
+    //       authors: authors,
+    //       loading: false
+    //     })
+    // //   )
+    // //   .catch(err => console.error(err));
+    // this.props.fetchAuthors();
+    // this.setState({
+    //   loading: false
+    // });
   }
 
   getView() {
@@ -47,7 +52,7 @@ class App extends Component {
           <Route
             path="/authors/"
             render={props => (
-              <AuthorsList {...props} authors={this.state.authors} />
+              <AuthorsList {...props} authors={this.props.authors} />
             )}
           />
         </Switch>
@@ -69,4 +74,21 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    authors: state.authors
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchAuthors: () => dispatch(actionCreators.fetchAuthors())
+  };
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);

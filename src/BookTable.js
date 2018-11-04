@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { connect } from "react-redux";
 import BookRow from "./BookRow";
 
 class BookTable extends Component {
@@ -22,4 +22,10 @@ class BookTable extends Component {
   }
 }
 
-export default BookTable;
+const mapStateToProps = state => {
+  return {
+    author: state.rootAuth.author
+  };
+};
+
+export default connect(mapStateToProps)(BookTable);

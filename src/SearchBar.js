@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
+import { connect } from "react-redux";
+import * as actionCreators from "./store/actions/index";
 class SearchBar extends Component {
   constructor(props) {
     super(props);
@@ -11,8 +12,19 @@ class SearchBar extends Component {
   }
 
   handleChange(event) {
-    this.setState({ query: event.target.value });
-    this.props.changeHandler(event.target.value);
+    // this.setState({ query: event.target.value });
+    // this.props.changeHandler(event.target.value);
+    this.props.filterAuthors(event.target.value);
+  }
+
+  filterAuthors(query) {
+    query = query.toLowerCase();
+    // let filteredAuthors = this.props.authors.filter(author => {
+    //   return `${author.first_name} ${author.last_name}`
+    //     .toLowerCase()
+    //     .includes(query);
+    // });
+    this.props.filterAuthors(query);
   }
 
   render() {
@@ -36,4 +48,13 @@ class SearchBar extends Component {
   }
 }
 
-export default SearchBar;
+const mapDispatchToProps = dispatch => {
+  return {
+    filterAuthors: authors => dispatch(actionCreators.filterAuthors(authors))
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(SearchBar);
